@@ -125,4 +125,22 @@ view: trips_2015 {
     type: count
     drill_fields: []
   }
+  parameter: date_granularity {
+    type: string
+    allowed_value: { value: "Day" }
+    allowed_value: { value: "Month" }
+    allowed_value: { value: "Quarter" }
+    allowed_value: { value: "Year" }
+  }
+  dimension: date {
+    label_from_parameter: date_granularity
+    sql:
+    CASE
+    WHEN {% parameter date_granularity %} = 'Day' THEN ${dropoff_datetime_date}
+    WHEN {% parameter date_granularity %} = 'Month' THEN ${pickup_datetime_month}
+    WHEN {% parameter date_granularity %} = 'Quarter' THEN ${pickup_datetime_quarter}
+    WHEN {% parameter date_granularity %} = 'Year' THEN ${pickup_datetime_year}
+    ELSE NULL
+  END ;;
+  }
 }
